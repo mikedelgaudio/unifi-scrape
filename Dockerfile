@@ -15,7 +15,14 @@ WORKDIR /app
 
 # Create a non-root user
 RUN useradd --create-home appuser
+
+# Ensure correct permissions for app files for appuser
+RUN chown -R appuser:appuser /app
+
 USER appuser
+
+# Set environment variable for production mode
+ENV NODE_ENV=production
 
 # Copy only necessary files from build stage
 COPY --from=build /app /app
