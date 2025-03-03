@@ -1,0 +1,29 @@
+{
+  "name": "unifi-scrape",
+  "version": "1.0.0",
+  "description": "A stock checker for UI.com products with Discord webhook notifications.",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "NODE_OPTIONS='--loader ts-node/esm' ts-node src/index.ts",
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}

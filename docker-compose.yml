@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  stock-checker:
+    build: .
+    restart: always
+    environment:
+      - TARGET_URL=${TARGET_URL}
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
+      - CHECK_INTERVAL=60
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000" # Ensure it's not running as root
+    read_only: true # Prevents unnecessary write access
