@@ -27,6 +27,7 @@ async function notifyDiscord(message: string) {
     console.log("✅ Notification sent!");
   } catch (error) {
     console.error("❌ Error sending Discord notification:", error);
+    process.exit(1);
   }
 }
 
@@ -72,6 +73,10 @@ async function checkStock() {
     }
   } catch (error) {
     console.error("❌ Error scraping:", error);
+    await notifyDiscord(
+      "@everyone ❌ Error scraping website. Process exiting."
+    );
+    process.exit(1);
   }
 
   setTimeout(checkStock, currentInterval * 1000);

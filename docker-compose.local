@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  unifi-scrape:
+    image: mikedelgaudio/unifi-scrape:latest
+    container_name: unifi-scrape
+    restart: unless-stopped
+    environment:
+      - TARGET_URL=${TARGET_URL}
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
+      - CHECK_INTERVAL=${CHECK_INTERVAL}
+      - NODE_ENV=production
