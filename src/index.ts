@@ -8,11 +8,11 @@ const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK || "";
 const MIN_INTERVAL_IN_SECONDS = parseInt(
   process.env.MIN_INTERVAL_IN_SECONDS || "60",
   10
-); // Minimum interval (seconds)
+);
 const MAX_INTERVAL_IN_SECONDS = parseInt(
   process.env.MAX_INTERVAL_IN_SECONDS || "300",
   10
-); // Maximum interval (seconds)
+);
 
 if (!TARGET_URL || !DISCORD_WEBHOOK) {
   console.error("❌ Missing TARGET_URL or DISCORD_WEBHOOK in .env file");
@@ -21,6 +21,10 @@ if (!TARGET_URL || !DISCORD_WEBHOOK) {
 
 let currentInterval = MIN_INTERVAL_IN_SECONDS;
 let isProductInStock = false;
+
+function log(message: string) {
+  console.log(`[${new Date().toLocaleTimeString()} UTC] - ${message}`);
+}
 
 // Function to generate a random number between `min` and `max`
 function getRandomInterval(min: number, max: number): number {
@@ -36,7 +40,7 @@ async function notifyDiscord(message: string) {
         content: message,
       }),
     });
-    console.log("✅ Notification sent!");
+    log("✅ Notification sent!");
   } catch (error) {
     console.error("❌ Error sending Discord notification:", error);
     process.exit(1);
@@ -45,7 +49,7 @@ async function notifyDiscord(message: string) {
 
 async function checkStock() {
   try {
-    console.log(`🔍 Checking stock (Interval: ${currentInterval}s)...`);
+    log(`🔍 Checking stock (Interval: ${currentInterval}s)...`);
 
     const response = await fetch(TARGET_URL);
     const html = await response.text();
@@ -55,12 +59,12 @@ async function checkStock() {
 
     if (addToCartButton.length > 0) {
       if (!isProductInStock) {
-        console.log("🚀 Product is in stock for the first time!");
+        log("🚀 Product is in stock for the first time!");
         await notifyDiscord(
           `@everyone 🚀 Product is in stock! [Buy Now](${TARGET_URL})`
         );
       } else {
-        console.log("✅ Product is still in stock.");
+        log("✅ Product is still in stock.");
         await notifyDiscord(
           `✅ Product is still in stock. [Buy Now](${TARGET_URL})`
         );
@@ -73,22 +77,18 @@ async function checkStock() {
       currentInterval = Math.min(currentInterval * 2, 3600);
     } else {
       if (isProductInStock) {
-        console.log("❌ Product is out of stock. Resetting backoff.");
+        log("❌ Product is out of stock. Resetting backoff.");
         await notifyDiscord("❌ Product went out of stock.");
 
         // Reset if it goes out of stock
         isProductInStock = false;
         currentInterval = MIN_INTERVAL_IN_SECONDS;
       } else {
-        // Time in UTC
-        const timestamp = new Date().toLocaleTimeString();
         const interval = getRandomInterval(
           MIN_INTERVAL_IN_SECONDS,
           MAX_INTERVAL_IN_SECONDS
         );
-        console.log(
-          `[${timestamp} UTC] - ❌ Still out of stock. Next check in ${interval}s`
-        );
+        log(`❌ Still out of stock. Next check in ${interval}s`);
         currentInterval = interval;
       }
     }
