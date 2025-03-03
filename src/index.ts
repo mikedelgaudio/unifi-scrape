@@ -80,13 +80,14 @@ async function checkStock() {
         isProductInStock = false;
         currentInterval = MIN_INTERVAL_IN_SECONDS;
       } else {
+        // Time in UTC
         const timestamp = new Date().toLocaleTimeString();
         const interval = getRandomInterval(
           MIN_INTERVAL_IN_SECONDS,
           MAX_INTERVAL_IN_SECONDS
         );
         console.log(
-          `[${timestamp}] - ❌ Still out of stock. Next check in ${interval}s`
+          `[${timestamp} UTC] - ❌ Still out of stock. Next check in ${interval}s`
         );
         currentInterval = interval;
       }
