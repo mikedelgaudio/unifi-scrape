@@ -7,7 +7,8 @@ services:
     environment:
       - TARGET_URL=${TARGET_URL}
       - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
-      - CHECK_INTERVAL=60
+      - MIN_INTERVAL_IN_SECONDS=${MIN_INTERVAL_IN_SECONDS}
+      - MAX_INTERVAL_IN_SECONDS=${MAX_INTERVAL_IN_SECONDS}
       - NODE_ENV=production
     security_opt:
       - no-new-privileges:true
