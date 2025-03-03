@@ -15,22 +15,22 @@ if (!TARGET_URL || !DISCORD_WEBHOOK) {
 let currentInterval = BASE_INTERVAL;
 let isProductInStock = false;
 
-const notifyDiscord = async () => {
+async function notifyDiscord(message: string) {
   try {
     await fetch(DISCORD_WEBHOOK, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: `@everyone 🚀 Product is in stock! [Buy Now](${TARGET_URL})`,
+        content: message,
       }),
     });
     console.log("✅ Notification sent!");
   } catch (error) {
     console.error("❌ Error sending Discord notification:", error);
   }
-};
+}
 
-const checkStock = async () => {
+async function checkStock() {
   try {
     console.log(`🔍 Checking stock (Interval: ${currentInterval}s)...`);
 
@@ -43,9 +43,14 @@ const checkStock = async () => {
     if (addToCartButton.length > 0) {
       if (!isProductInStock) {
         console.log("🚀 Product is in stock for the first time!");
-        await notifyDiscord();
+        await notifyDiscord(
+          `@everyone 🚀 Product is in stock! [Buy Now](${TARGET_URL})`
+        );
       } else {
         console.log("✅ Product is still in stock.");
+        await notifyDiscord(
+          `✅ Product is still in stock. [Buy Now](${TARGET_URL})`
+        );
       }
 
       // Set in-stock flag
@@ -56,6 +61,7 @@ const checkStock = async () => {
     } else {
       if (isProductInStock) {
         console.log("❌ Product is out of stock. Resetting backoff.");
+        await notifyDiscord("❌ Product went out of stock.");
       } else {
         console.log("❌ Still out of stock.");
       }
@@ -69,6 +75,6 @@ const checkStock = async () => {
   }
 
   setTimeout(checkStock, currentInterval * 1000);
-};
+}
 
 checkStock();
